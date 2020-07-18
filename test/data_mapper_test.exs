@@ -50,7 +50,6 @@ defmodule DataMapperTest do
     assert output == %{foo: 100, bar: 2000}
   end
 
-
   defmodule TestNestedMapper do
     use DataMapper,
       mappings: %{

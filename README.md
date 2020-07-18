@@ -1,5 +1,7 @@
 # DataMapper
 
+![Test](https://github.com/ryanwinchester/data_mapper/workflows/Test/badge.svg)
+
 A macro module and behaviour with default mapping implementations.
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
