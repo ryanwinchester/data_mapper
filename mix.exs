@@ -10,7 +10,7 @@ defmodule DataMapper.MixProject do
       deps: deps(),
       dialyzer: [plt_file: {:no_warn, "priv/plts/dialyzer.plt"}],
 
-      name: "MyApp",
+      name: "DataMapper",
       source_url: "https://github.com/ryanwinchester/data_mapper",
       homepage_url: "https://github.com/ryanwinchester/data_mapper",
       docs: [
@@ -43,8 +43,7 @@ defmodule DataMapper.MixProject do
       description: "A macro module and behaviour with default mapping implementations.",
       licenses: ["Apache v2.0"],
       links: %{
-        "github" => "https://github.com/ryanwinchester/data_mapper",
-        "company" => "https://sevenshores.co"
+        "Github" => "https://github.com/ryanwinchester/data_mapper"
       }
     ]
   end
