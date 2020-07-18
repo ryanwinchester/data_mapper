@@ -40,14 +40,12 @@ defmodule DataMapper.MixProject do
 
   defp package do
     [
-      name: "DataMapper",
-      organization: "Sevenshores Software",
       description: "A macro module and behaviour with default mapping implementations.",
       licenses: ["Apache v2.0"],
-      links: [
-        github: "https://github.com/ryanwinchester/data_mapper",
-        company: "https://sevenshores.co"
-      ]
+      links: %{
+        "github" => "https://github.com/ryanwinchester/data_mapper",
+        "company" => "https://sevenshores.co"
+      }
     ]
   end
 end
