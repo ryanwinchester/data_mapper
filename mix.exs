@@ -8,7 +8,18 @@ defmodule DataMapper.MixProject do
       elixir: "~> 1.9",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      dialyzer: [plt_file: {:no_warn, "priv/plts/dialyzer.plt"}]
+      dialyzer: [plt_file: {:no_warn, "priv/plts/dialyzer.plt"}],
+
+      name: "MyApp",
+      source_url: "https://github.com/ryanwinchester/data_mapper",
+      homepage_url: "https://github.com/ryanwinchester/data_mapper",
+      docs: [
+        main: "DataMapper",
+        # logo: "path/to/logo.png",
+        extras: ["README.md"]
+      ],
+
+      package: package()
     ]
   end
 
@@ -22,7 +33,21 @@ defmodule DataMapper.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:dialyxir, "~> 1.0", only: [:dev], runtime: false}
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
+      {:ex_doc, "~> 0.22", only: :dev, runtime: false}
+    ]
+  end
+
+  defp package do
+    [
+      name: "DataMapper",
+      organization: "Sevenshores Software",
+      description: "A macro module and behaviour with default mapping implementations.",
+      licenses: ["Apache v2.0"],
+      links: [
+        github: "https://github.com/ryanwinchester/data_mapper",
+        company: "https://sevenshores.co"
+      ]
     ]
   end
 end
