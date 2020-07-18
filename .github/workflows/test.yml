@@ -1,0 +1,58 @@
+name: Test
+
+on:
+  push:
+    branches: [master, develop]
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        elixir: [1.9.x, 1.10.x]
+        otp: [22.x, 23.x]
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Setup Elixir
+        uses: actions/setup-elixir@v1
+        with:
+          elixir-version: ${{matrix.elixir}}
+          otp-version: ${{matrix.otp}}
+
+      - name: Deps cache
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: deps-${{ hashFiles('mix.lock') }}-${{github.ref}}
+          restore-keys: |
+            deps-
+
+      - name: PLT cache
+        uses: actions/cache@v1
+        with:
+          path: priv/plts
+          key: plt-${{matrix.otp}}-${{matrix.elixir}}-${{github.ref}}
+          restore-keys: |
+            plt-${{matrix.otp}}-${{matrix.elixir}}-
+
+      - name: Install dependencies
+        run: mix deps.get
+
+      - name: Check formatting
+        run: mix format --check-formatted
+
+      - name: Compile test env
+        run: mix compile
+        env:
+          MIX_ENV: test
+
+      - name: Run tests
+        run: mix test
+
+      - name: Run dialyzer
+        run: mix dialyzer --format dialyxir
