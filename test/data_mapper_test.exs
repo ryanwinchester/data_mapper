@@ -10,9 +10,9 @@ defmodule DataMapperTest do
       }
 
     @impl DataMapper
-    def map_field({_, nil} = field), do: field
-    def map_field({:bar, field}), do: {:bar, field * 1000}
-    def map_field(field), do: field
+    def map_field({_, nil}), do: nil
+    def map_field({:bar, value}), do: value * 1000
+    def map_field({_key, value}), do: value
   end
 
   test "maps and overrides map_field/2" do
@@ -38,9 +38,9 @@ defmodule DataMapperTest do
     end
 
     @impl DataMapper
-    def map_field({_, nil} = field), do: field
-    def map_field({:bar, field}), do: {:bar, field * 1000}
-    def map_field(field), do: field
+    def map_field({_, nil}), do: nil
+    def map_field({:bar, value}), do: value * 1000
+    def map_field({_key, value}), do: value
   end
 
   test "maps and overrides post_map_transform/1" do
@@ -53,24 +53,34 @@ defmodule DataMapperTest do
   defmodule TestNestedMapper do
     use DataMapper,
       mappings: %{
-        "someFoo" => :foo,
-        "someBar" => :bar,
-        "extraThing" => :extra_thing,
-        "sub" => %{
-          "bub" => :dub
-        }
+        "a" => :a,
+        "b" => :b,
+        "extra" => :extra,
+        "nested" => {:nested, %{"foo" => :foo}},
+        "flattened" => %{"f1" => :flattened_1, "f2" => :flattened_2}
       }
 
     @impl DataMapper
-    def map_field({_, nil} = field), do: field
-    def map_field({:bar, field}), do: {:bar, field * 1000}
-    def map_field(field), do: field
+    def map_field({:b, value}), do: value * 1000
+    def map_field({_key, value}), do: value
   end
 
   test "maps nested map" do
-    input = %{"someFoo" => 100, "someBar" => 2, "sub" => %{"bub" => :grub}}
+    input = %{
+      "a" => 100,
+      "b" => 2,
+      "nested" => %{"foo" => :grub},
+      "flattened" => %{"f1" => false, "f2" => "what"}
+    }
+
     output = TestNestedMapper.map(input)
 
-    assert output == %{foo: 100, bar: 2000, dub: :grub}
+    assert output == %{
+             a: 100,
+             b: 2000,
+             nested: %{foo: :grub},
+             flattened_1: false,
+             flattened_2: "what"
+           }
   end
 end
