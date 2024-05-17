@@ -45,9 +45,13 @@ defmodule DataMapper do
       def map(input) do
         input
         |> pre_map_transform()
+        |> maybe_struct_to_map()
         |> map(unquote(mappings))
         |> post_map_transform()
       end
+
+      def maybe_struct_to_map(value) when is_struct(value), do: Map.from_struct(value)
+      def maybe_struct_to_map(value), do: value
 
       ## Callbacks
 
@@ -57,14 +61,18 @@ defmodule DataMapper do
       @impl true
       @spec map(input :: map() | keyword(), mappings :: map()) :: map()
       def map(input, mappings) do
-        Enum.into(mappings, %{}, fn
-          # Handle a nested map.
-          {from_key, sub_mappings} when is_map(sub_mappings) ->
-            map(input[from_key], sub_mappings)
+        Enum.reduce(mappings, %{}, fn
+          # # Handle a nested map.
+          # # This part needs to be re-worked. It's broken.
+          # {from_key, {to_key, sub_mappings}}, acc when is_map(sub_mappings) ->
+          #   Map.put(acc, to_key, map(input[from_key], sub_mappings))
 
           # The normal case, mapping the input key to the output key.
-          {from_key, to_key} ->
-            map_field({to_key, input[from_key]})
+          {from_key, to_key}, acc ->
+            Map.put(acc, to_key, map_field({from_key, input[from_key]}))
+
+          _, acc ->
+            acc
         end)
       end
 
@@ -73,7 +81,7 @@ defmodule DataMapper do
       """
       @impl true
       @spec map_field({atom, any}) :: {atom, any}
-      def map_field(field), do: field
+      def map_field({_field, value}), do: value
 
       @doc """
       Transform the list before mapping.
