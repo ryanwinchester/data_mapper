@@ -4,12 +4,11 @@ defmodule DataMapper.MixProject do
   def project do
     [
       app: :data_mapper,
-      version: "0.1.0",
+      version: "0.2.0",
       elixir: "~> 1.9",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       dialyzer: [plt_file: {:no_warn, "priv/plts/dialyzer.plt"}],
-
       name: "DataMapper",
       source_url: "https://github.com/ryanwinchester/data_mapper",
       homepage_url: "https://github.com/ryanwinchester/data_mapper",
@@ -18,7 +17,6 @@ defmodule DataMapper.MixProject do
         # logo: "path/to/logo.png",
         extras: ["README.md"]
       ],
-
       package: package()
     ]
   end

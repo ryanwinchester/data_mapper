@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
-        elixir: [1.9.x, 1.10.x]
-        otp: [22.x, 23.x]
+        elixir: [1.16.x]
+        otp: [26.x]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
