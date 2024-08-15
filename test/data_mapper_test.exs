@@ -57,7 +57,10 @@ defmodule DataMapperTest do
         "b" => :b,
         "extra" => :extra,
         "nested" => {:nested, %{"foo" => :foo}},
-        "flattened" => %{"f1" => :flattened_1, "f2" => :flattened_2}
+        "flattened" => %{
+          "f1" => :flattened_1,
+          "f2" => :flattened_2
+        }
       }
 
     @impl DataMapper

@@ -5,7 +5,7 @@ defmodule DataMapper do
 
   @callback map_list(input :: any) :: [map()]
 
-  @callback map(input :: any) :: map()
+  @callback map(input :: any) :: any()
 
   @callback map(input :: any, mappings :: map()) :: map()
 
@@ -17,12 +17,12 @@ defmodule DataMapper do
 
   @callback pre_map_transform(any) :: any
 
-  @callback post_map_transform(any) :: map()
+  @callback post_map_transform(any) :: any
 
   defmacro __using__(opts) do
     {mappings, opts} = Keyword.pop!(opts, :mappings)
 
-    quote do
+    quote location: :keep do
       @behaviour DataMapper
 
       @doc """
@@ -41,7 +41,7 @@ defmodule DataMapper do
       Maps input to the mappings described in the `opts`.
       """
       @impl DataMapper
-      @spec map(map() | keyword()) :: map()
+      @spec map(map() | keyword()) :: any()
       def map(input) do
         input
         |> pre_map_transform()
@@ -73,7 +73,12 @@ defmodule DataMapper do
 
           # Flatten nested mapping.
           {from_key, sub_mapping}, acc when is_map(sub_mapping) ->
-            map(input[from_key], sub_mapping, Keyword.merge(opts, into: acc))
+            opts = Keyword.merge(opts, into: acc)
+
+            case input[from_key] do
+              data when is_list(data) -> Enum.map(data, &map(&1, sub_mapping, opts))
+              data -> map(data, sub_mapping, opts)
+            end
 
           # Normal mapping.
           {from_key, to_key}, acc ->
@@ -130,6 +135,6 @@ defmodule DataMapper do
   end
 
   def to_map(input) when is_struct(input), do: Map.from_struct(input)
-  def to_map(input) when is_list(input), do: Map.new(input)
   def to_map(input) when is_map(input), do: input
+  def to_map([{_, _} | _] = input), do: Map.new(input)
 end
