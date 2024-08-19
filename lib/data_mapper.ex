@@ -65,7 +65,10 @@ defmodule DataMapper do
 
           # Applies a function to a field.
           {from_key, {to_key, fun}}, acc when is_function(fun) ->
-            Map.put(acc, to_key, fun.(input[from_key]))
+            case input[from_key] do
+              nil -> acc
+              data -> Map.put(acc, to_key, fun.(data))
+            end
 
           # Nested mapping.
           {from_key, {to_key, sub_mapping}}, acc when is_map(sub_mapping) ->
@@ -77,6 +80,7 @@ defmodule DataMapper do
 
             case input[from_key] do
               data when is_list(data) -> Enum.map(data, &map(&1, sub_mapping, opts))
+              nil -> acc
               data -> map(data, sub_mapping, opts)
             end
 
